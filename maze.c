@@ -44,12 +44,17 @@ bool checkArgumentValidation(int num, char *commandArgument[])
     return true;
 }
 
-bool checkValidationMap(int width, int height, char *fileName)
+bool checkValidationMap(int row, int col, char *fileName)
 {
+    bool flag = true;
+    char line[]
+    FILE *file = fopen(fileName, "r");
     // Check whether the length and width correspond to the contents of the file
     // Check the Point S and point D exist simultaneously
     // Check whether the contents are legal
     // If all the tests, then run the function of readFile
+    fclose(file);
+    return true;
 }
 
 char** readFile(int rows, int cols, char *fileName) {
@@ -60,9 +65,11 @@ char** readFile(int rows, int cols, char *fileName) {
 
     // The contents of the file are read by line
     // and stored in the map array
-    // Find the S and E points
-    for(int i = 0; i < rows; i++) {
-        for(int j = 0; j < cols; j++) {
+    FILE *file = fopen(fileName, "r");
+    for (int i = 0; i < width; i++) {
+        for (int j = 0; j < cols; j++) {
+            char c = fgetc(file);
+            map[i][j] = c;
             if(map[i][j] == 'S') {
                 s.col = j;
                 s.row = i;
@@ -73,8 +80,9 @@ char** readFile(int rows, int cols, char *fileName) {
                 e.row = i;
             }
         }
+        fgetc(file);
     }
-    
+    fclose(file);
     return map;
 }
 

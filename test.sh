@@ -1,245 +1,258 @@
 #!/bin/bash
 chmod + maze.c
 
-echo -n "Test 1: Test the overmuch number of command line arguments\n"
-./maze TestData/test1.txt 10 10 10 < Input/operationsFile1.txt > tmp
-if grep -q "ERROR: The number of command line arguments is not correct" tmp;
+basic_function() {
+    echo -n "$1"
+
+    eval "$2" > tmp
+
+    if grep -q "$3" tmp; then
+        echo -e "\e[32m PASS \e[0m"
+    else
+        echo -e "\e[31m FAIL \e[0m"
+    fi
+
+    rm -f tmp
+}
+
+check_map() {
+    map=$(<"$1")
+
+    map=${map//S/X}
+
+    expected=$(<"$2")
+
+    if [ "$map" = "$expected" ]; then
+        return 1
+    else
+        return 0
+    fi
+}
+
+
+echo -n "\n\e[33mThe validity of command line arguments\e[0m\n"
+
+basic_function\
+    "\nTest 1: Test the overmuch number of command line arguments\n"\
+    "./maze TestData/invalid_argu.txt 10 10 10"\
+    "ERROR: The number of command line arguments is not correct"
+
+basic_function\
+    "Test 2: Test the too little number of command line arguments\n"\
+    "./maze TestData/invalid_argu.txt 10"\
+    "ERROR: The number of command line arguments is not correct"
+
+basic_function\
+    "Test 3: Lack of filename of maze\n"\
+    "./maze 10 10"\
+    "ERROR: The number of command line arguments is not correct"
+
+basic_function\
+    "Test 4: The file is not exist\n"\
+    "./maze TestData/None.txt 10 10"\
+    "ERROR: The file is not exist"
+
+basic_function\
+    "Test 5: Uncorrect data type\n"\
+    "./maze TestData/data.csv 10 10"\
+    "ERROR: The data type is invalid"
+
+basic_function\
+    "Test 6: Test the invalid data type (1)\n"\
+    "./maze TestData/invalid_argu.txt 10.0 10"\
+    "ERROR: The arguments of width and height are not valid"
+
+basic_function\
+    "Test 7: Test the invalid data type (2)\n"\
+    "./maze TestData/invalid_argu.txt 10 a~"\
+    "ERROR: The arguments of width and height are not valid"
+
+basic_function\
+    "Test 8: Test the invalid data range (1)\n"\
+    "./maze TestData/invalid_argu.txt 10 3"\
+    "ERROR: The arguments of width and height are not valid"
+
+basic_function\
+    "Test 9: Test the invalid data range (2)\n"\
+    "./maze TestData/invalid_argu.txt 110 10"\
+    "ERROR: The arguments of width and height are not valid"
+
+basic_function\
+    "Test 10: Test the invalid data range (3)\n"\
+    "./maze TestData/invalid_argu.txt -25 10"\
+    "ERROR: The arguments of width and height are not valid"
+
+basic_function\
+    "Test 11: Test the invalid data range (4)\n"\
+    "./maze TestData/invalid_argu.txt 10 0"\
+    "ERROR: The arguments of width and height are not valid"
+
+echo -n "\n\e[33mMaze file validity detection\e[30m\n"
+
+basic_function\
+    "\nTest 12: Test missing point of S or E (1)\n"\
+    "./maze TestData/lack_SE.txt 10 10"\
+    "ERROR: The map is not valid"
+
+basic_function\
+    "Test 13: Test repeated point of S or E (2)\n"\
+    "./maze TestData/re_SE.txt 10 10"\
+    "ERROR: The map is not valid"
+
+basic_function\
+    "Test 14: The invalid symbol in the maze\n"\
+    "./maze TestData/invalid_symbol.txt 10 10"\
+    "ERROR: The map is not valid"
+
+basic_function\
+    "Test 15: The length and width information do not match (less in row)\n"\
+    "./maze TestData/lessrow.txt 10 10"\
+    "ERROR: The map is not valid"
+
+basic_function\
+    "Test 16: The length and width information do not match (less in col)\n"\
+    "./maze TestData/lesscol.txt 10 10"\
+    "ERROR: The map is not valid"
+
+basic_function\
+    "Test 17: The length and width information do not match (more in col)\n"\
+    "./maze TestData/morecol.txt 10 10"\
+    "ERROR: The map is not valid"
+
+basic_function\
+    "Test 18: The length and width information do not match (more in row)\n"\
+    "./maze TestData/morerow.txt 10 10"\
+    "ERROR: The map is not valid"
+
+basic_function\
+    "Test 19: The length and width information do not match (more in col)\n"\
+    "./maze TestData/morecol.txt 10 10"\
+    "ERROR: The map is not valid"
+
+
+basic_function\
+    "Test 20: The length and width information do not match (much more)\n"\
+    "./maze TestData/m_m.txt 10 10"\
+    "ERROR: The map is not valid"
+
+echo -n "\n\e[33mMaze boundary condition detection\e[0m\n"
+
+basic_function\
+    "\nTest 21: Unreachable end point\n"\
+    "./maze TestData/Unre_e.txt 20 20"\
+    "WARNING: This game cannot be won"
+
+basic_function\
+    "Test 22: A maze with a minimum length and width\n"\
+    "./maze TestData/legal_minm.txt 5 5 < Input/std_operation.txt"\
+    "move successfully"
+
+basic_function\
+    "Test 23: A maze with a maxmum length and width\n"\
+    "./maze TestData/legal_maxm.txt 100 100 < Input/std_operation.txt"\
+    "move successfully"
+
+basic_function\
+    "Test 24: Reach the end point\n"\
+    "./maze TestData/std_maze.txt 25 25 < Input/std_solution.txt"\
+    "Winner Winner, Chicken dinner! -Yuk1 wish you happy every day"
+
+echo -n "\n\e[33mOperation instruction detection\e[0m\n"
+echo -n "   invalid detection:\n"
+
+basic_function\
+    "\nTest 25: Empty operation instruction\n"\
+    "./maze TestData/std_maze.txt 25 25 < Input/Empty.txt"\
+    "WARNING: The operation instruction is empty! Please change it"
+
+basic_function\
+    "Test 26: The operation instruction is not exist\n"\
+    "./maze TestData/std_maze.txt 25 25 < Input/None.txt"\
+    "WARNING: The operation instruction is not exist! Please change it"
+
+basic_function\
+    "Test 27: Encountered a wall while moving\n"\
+    "./maze TestData/std_maze.txt 25 25 < Input/wall.txt"\
+    "oops! This step may have hit a snag. Please input: w/s/a/d/m"
+
+basic_function\
+    "Test 28: Encountered a boundary while moving\n"\
+    "./maze TestData/std_maze.txt 25 25 < Input/boundary.txt"\
+    "oops! This step may have hit a snag. Please input: w/s/a/d/m"
+
+basic_function\
+    "Test 29: Invalid operation instruction (1)\n"\
+    "./maze TestData/std_maze.txt 25 25 < Input/invalid_op_p.txt"\
+    "This operation is not valid, Please input: w/s/a/d/m"
+
+basic_function\
+    "Test 30: Invalid operation instruction (2)\n"\
+    "./maze TestData/std_maze.txt 25 25 < Input/invalid_op_n.txt"\
+    "This operation is not valid, Please input: w/s/a/d/m"
+
+basic_function\
+    "Test 31: Invalid operation instruction (3)\n"\
+    "./maze TestData/std_maze.txt 25 25 < Input/invalid_op_o.txt"\
+    "This operation is not valid, Please input: w/s/a/d/m"
+
+echo -n "\n\e[33mOperation instruction detection\e[0m\n"
+echo -n "   valid detection:\n"
+
+basic_function\
+    "Test 32: String operation instruction\n"\
+    "./maze TestData/std_maze.txt 25 25 < Input/std_solution_string.txt"\
+    "Winner Winner, Chicken dinner! -Yuk1 wish you happy every day"
+
+echo -n "Test 33: Normal input of w/a/s/d\n"
+./maze TestData/std_maze.txt 25 25 < Input/std_operation.txt > tmp
+cnt=$(grep -o "move successfully" tmp | wc -l)
+if [[ $cnt == 4 ]] && check_map "TestData/std_maze.txt" "$tmp" == 1;
 then
     echo -e "\e[32m PASS \e[0m"
 else
     echo -e "\e[31m FAIL \e[0m"
 fi
+rm -f tmp
 
-echo -n "Test 2: Test the too little number of command line arguments\n"
-./maze 10 < Input/operationsFile2.txt > tmp
-if grep -q "ERROR: The number of command line arguments is not correct" tmp;
+basic_function\
+    "Test 34: Check operation instructions are case insensitive\n"\
+    "./maze TestData/std_maze.txt 25 25 < Input/std_solution_Aa.txt"\
+    "Winner Winner, Chicken dinner! -Yuk1 wish you happy every day"
+
+basic_function\
+    "Test 35: Continuity of game\n"\
+    "./maze TestData/std_maze.txt 25 25 < Input/std_solution_bad.txt"\
+    "Winner Winner, Chicken dinner! -Yuk1 wish you happy every day"
+
+basic_function\
+    "Test 36: Check the maze before moving\n"\
+    "./maze TestData/std_maze.txt 25 25 < Input/m.txt"\
+    "maze is here:"
+
+echo -n "Test 37: Check the maze after moving\n"
+./maze TestData/std_maze.txt 25 25 < Input/moving_m.txt > tmp
+if diff tmp TestData/cmp.txt >/dev/null;
+then
+    echo -e "\e[32m PASS \e[0m"
+else
+    echo -e "\e[31m FAIL: \e[0m"
+    diff tmp TestData/cmp.txt
+fi
+rm -f tmp
+
+basic_function\
+    "Test 38: Overmuch operational inputs after reaching the end point\n"\
+    "./maze TestData/std_maze.txt 25 25 < Input/std_solution_more.txt"\
+    "Winner Winner, Chicken dinner! -Yuk1 wish you happy every day"
+
+echo -n "Test 39: Too little operational inputs before reaching the end point\n"
+./maze TestData/std_maze.txt 25 25 < Input/std_solution_less.txt > tmp
+last_line=$(tail -n 1 "$tmp")
+last_line_std="Please input your next operation in w/s/a/d/m: "
+if [[ "$last_line" == "$last_line_std" ]];
 then
     echo -e "\e[32m PASS \e[0m"
 else
     echo -e "\e[31m FAIL \e[0m"
 fi
-
-echo -n "Test 3: Test the uncorrect Filename of maze\n"
-./maze TestData/test0.txt 10 10 < Input/operationsFile3.txt > tmp
-if grep -q "ERROR: The file is not exist" tmp;
-then
-    echo -e "\e[32m PASS \e[0m"
-else
-    echo -e "\e[31m FAIL \e[0m"
-fi
-
-echo -n "Test 4: Test the invalid data type\n"
-./maze TestData/test4.txt 10.0 10 < Input/operationsFile4.txt > tmp
-if grep -q "ERROR: The arguments of width and height are not valid" tmp;
-then
-    echo -e "\e[32m PASS \e[0m"
-else
-    echo -e "\e[31m FAIL \e[0m"
-fi
-
-echo -n "Test 5: Test the invalid data type\n"
-./maze TestData/test5.txt 3 10 < Input/operationsFile5.txt > tmp
-if grep -q "ERROR: The arguments of width and height are not valid" tmp;
-then
-    echo -e "\e[32m PASS \e[0m"
-else
-    echo -e "\e[31m FAIL \e[0m"
-fi
-
-echo -n "Test 6: Test the invalid data type\n"
-./maze TestData/test6.txt 10 101 < Input/operationsFile6.txt > tmp
-if grep -q "ERROR: The arguments of width and height are not valid" tmp;
-then
-    echo -e "\e[32m PASS \e[0m"
-else
-    echo -e "\e[31m FAIL \e[0m"
-fi
-
-# echo -n "Test 7: Test missing point of S or E"
-# ./maze TestData/test7.txt 10 10 < Input/operationsFile7.txt > tmp
-# if grep -q "ERROR: The map is not valid" tmp;
-# then
-#     echo -e "\e[32m PASS \e[0m"
-# else
-#     echo -e "\e[31m FAIL \e[0m"
-# fi
-
-# echo -n "Test 8: The maze is not a rectangle (less)"
-# ./maze TestData/test8.txt 10 10 < Input/operationsFile8.txt > tmp
-# if grep -q "ERROR: The map is not valid" tmp;
-# then
-#     echo -e "\e[32m PASS \e[0m"
-# else
-#     echo -e "\e[31m FAIL \e[0m"
-# fi
-
-# echo -n "Test 9: The invalid symbol in the maze"
-# ./maze TestData/test9.txt 10 10 < Input/operationsFile9.txt > tmp
-# if grep -q "ERROR: The map is not valid" tmp;
-# then
-#     echo -e "\e[32m PASS \e[0m"
-# else
-#     echo -e "\e[31m FAIL \e[0m"
-# fi
-
-# echo -n "Test 10: Successfully reached the end of the maze"
-# ./maze TestData/test10.txt 10 10 < Input/operationsFile10.txt > tmp
-# if grep -q "Winner Winner, Chicken dinner! -Yuk1 wish you happy every day" tmp;
-# then
-#     echo -e "\e[32m PASS \e[0m"
-# else
-#     echo -e "\e[31m FAIL \e[0m"
-# fi
-
-# echo -n "Test 11: Encountered a wall while moving"
-# ./maze TestData/test11.txt 10 10 < Input/operationsFile11.txt > tmp
-# if grep -q "oops! This step may have hit a snag.Please try again" tmp;
-# then
-#     echo -e "\e[32m PASS \e[0m"
-# else
-#     echo -e "\e[31m FAIL \e[0m"
-# fi
-
-# echo -n "Test 12: A boundary is encountered while moving"
-# ./maze TestData/test12.txt 10 10 < Input/operationsFile12.txt > tmp
-# if grep -q "oops! This step may have hit a snag.Please try again" tmp;
-# then
-#     echo -e "\e[32m PASS \e[0m"
-# else
-#     echo -e "\e[31m FAIL \e[0m"
-# fi
-
-# echo -n "Test 13: The game continues after encountering a snag"
-# ./maze TestData/test13.txt 10 10 < Input/operationsFile13.txt > tmp
-# if grep -q "Winner Winner, Chicken dinner! -Yuk1 wish you happy every day" tmp;
-# then
-#     echo -e "\e[32m PASS \e[0m"
-# else
-#     echo -e "\e[31m FAIL \e[0m"
-# fi
-
-# echo -n "Test 14: Check the map"
-# ./maze TestData/test14.txt 10 10 < Input/operationsFile14.txt > tmp
-# if grep -q "Winner Winner, Chicken dinner! -Yuk1 wish you happy every day" tmp;
-# then
-#     echo -e "\e[32m PASS \e[0m"
-# else
-#     echo -e "\e[31m FAIL \e[0m"
-# fi
-
-# echo -n "Test 15: Check Input is case insensitive"
-# ./maze TestData/test15.txt 10 10 < Input/operationsFile15.txt > tmp
-# if grep -q "Winner Winner, Chicken dinner! -Yuk1 wish you happy every day" tmp && grep -q "This is the maze" tmp;
-# then
-#     echo -e "\e[32m PASS \e[0m"
-# else
-#     echo -e "\e[31m FAIL \e[0m"
-# fi
-
-# echo -n "Test 16: Invalid operation input"
-# ./maze TestData/test16.txt 10 10 < Input/operationsFile16.txt > tmp
-# if grep -q "The operation is not valid, Please change it" tmp;
-# then
-#     echo -e "\e[32m PASS \e[0m"
-# else
-#     echo -e "\e[31m FAIL \e[0m"
-# fi
-
-# echo -n "Test 17: Overmuch operational inputs after reaching the end point"
-# ./maze TestData/test17.txt 10 10 < Input/operationsFile17.txt > tmp
-# if grep -q "Winner Winner, Chicken dinner! -Yuk1 wish you happy every day" tmp;
-# then
-#     echo -e "\e[32m PASS \e[0m"
-# else
-#     echo -e "\e[31m FAIL \e[0m"
-# fi
-
-# echo -n "Test 18: Too little operational inputs before reaching the end point"
-# ./maze TestData/test18.txt 50 50 < Input/operationsFile18.txt > tmp
-# if grep -q "oops! Please add operations" tmp;
-# then
-#     echo -e "\e[32m PASS \e[0m"
-# else
-#     echo -e "\e[31m FAIL \e[0m"
-# fi
-
-# echo -n "Test 19: End unreachable"
-# ./maze TestData/test19.txt 10 10 < Input/operationsFile19.txt > tmp
-# if grep -q "oops! Please add operations" tmp;
-# then
-#     echo -e "\e[32m PASS \e[0m"
-# else
-#     echo -e "\e[31m FAIL \e[0m"
-# fi
-
-# echo -n "Test 20: Boundary case with length and width of 5 (Successfully)"
-# ./maze TestData/test20.txt 5 5 < Input/operationsFile20.txt > tmp
-# if grep -q "Winner Winner, Chicken dinner! -Yuk1 wish you happy every day" tmp;
-# then
-#     echo -e "\e[32m PASS \e[0m"
-# else
-#     echo -e "\e[31m FAIL \e[0m"
-# fi
-
-# echo -n "Test 21: Boundary case with length and width of 5 (Unuccessfully)"
-# ./maze TestData/test21.txt 5 5 < Input/operationsFile21.txt > tmp
-# if grep -q "oops! Please add operations" tmp;
-# then
-#     echo -e "\e[32m PASS \e[0m"
-# else
-#     echo -e "\e[31m FAIL \e[0m"
-# fi
-
-# echo -n "Test 22: Boundary case with length and width of 100 (Successfully)"
-# ./maze TestData/test22.txt 100 100 < Input/operationsFile22.txt > tmp
-# if grep -q "Winner Winner, Chicken dinner! -Yuk1 wish you happy every day" tmp;
-# then
-#     echo -e "\e[32m PASS \e[0m"
-# else
-#     echo -e "\e[31m FAIL \e[0m"
-# fi
-
-# echo -n "Test 23: Boundary case with length and width of 100 (Unuccessfully)"
-# ./maze TestData/test23.txt 100 100 < Input/operationsFile23.txt > tmp
-# if grep -q "oops! Please add operations" tmp;
-# then
-#     echo -e "\e[32m PASS \e[0m"
-# else
-#     echo -e "\e[31m FAIL \e[0m"
-# fi
-
-# echo -n "Test 24: Repeatable S or E points"
-# ./maze TestData/test24.txt 10 10 < Input/operationsFile24.txt > tmp
-# if grep -q "ERROR: The map is not valid" tmp;
-# then
-#     echo -e "\e[32m PASS \e[0m"
-# else
-#     echo -e "\e[31m FAIL \e[0m"
-# fi
-
-# echo -n "Test 25: Test the uncorrect Filename of operation"
-# ./maze TestData/test25.txt 10 10 < Input/operationsFile25.txt > tmp
-# if grep -q "ERROR: The operation file is not exist" tmp;
-# then
-#     echo -e "\e[32m PASS \e[0m"
-# else
-#     echo -e "\e[31m FAIL \e[0m"
-# fi
-
-# echo -n "Test 26: The maze is not a rectangle (more)"
-# ./maze TestData/test26.txt 10 10 < Input/operationsFile26.txt > tmp
-# if grep -q "ERROR: The map is not valid" tmp;
-# then
-#     echo -e "\e[32m PASS \e[0m"
-# else
-#     echo -e "\e[31m FAIL \e[0m"
-# fi
-
-# echo -n "Test 27: Check the maze before moving"
-# ./maze TestData/test27.txt 10 10 < Input/operationsFile27.txt > tmp
-# if grep -q "ERROR: The map is not valid" tmp;
-# then
-#     echo -e "\e[32m PASS \e[0m"
-# else
-#     echo -e "\e[31m FAIL \e[0m"
-# fi
+rm -f tmp
