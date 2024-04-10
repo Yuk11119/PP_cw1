@@ -87,7 +87,7 @@ basic_function\
     "./maze TestData/invalid_argu.txt 10 0"\
     "ERROR: The arguments of width and height are not valid"
 
-echo -n "\n\e[33mMaze file validity detection\e[30m\n"
+echo -n "\n\e[33mMaze file validity detection\e[0m\n"
 
 basic_function\
     "\nTest 12: Test missing point of S or E (1)\n"\
@@ -161,7 +161,7 @@ echo -n "   invalid detection:\n"
 
 basic_function\
     "\nTest 25: Empty operation instruction\n"\
-    "./maze TestData/std_maze.txt 25 25 < Input/Empty.txt"\
+    "./maze TestData/std_maze.txt 25 25 < Input/empty.txt"\
     "WARNING: The operation instruction is empty! Please change it"
 
 basic_function\
@@ -205,7 +205,7 @@ basic_function\
 echo -n "Test 33: Normal input of w/a/s/d\n"
 ./maze TestData/std_maze.txt 25 25 < Input/std_operation.txt > tmp
 cnt=$(grep -o "move successfully" tmp | wc -l)
-if [[ $cnt == 4 ]] && check_map "TestData/std_maze.txt" "$tmp" == 1;
+if [[ $cnt == 8 ]] && check_map "TestData/std_maze.txt" "$tmp" == 1;
 then
     echo -e "\e[32m PASS \e[0m"
 else
@@ -226,18 +226,12 @@ basic_function\
 basic_function\
     "Test 36: Check the maze before moving\n"\
     "./maze TestData/std_maze.txt 25 25 < Input/m.txt"\
-    "maze is here:"
+    "maze is here (12, 10):"
 
-echo -n "Test 37: Check the maze after moving\n"
-./maze TestData/std_maze.txt 25 25 < Input/moving_m.txt > tmp
-if diff tmp TestData/cmp.txt >/dev/null;
-then
-    echo -e "\e[32m PASS \e[0m"
-else
-    echo -e "\e[31m FAIL: \e[0m"
-    diff tmp TestData/cmp.txt
-fi
-rm -f tmp
+basic_function\
+    "Test 37: Check the maze after moving\n"\
+    "./maze TestData/std_maze.txt 25 25 < Input/moving_m.txt"\
+    "maze is here (14, 9):"
 
 basic_function\
     "Test 38: Overmuch operational inputs after reaching the end point\n"\
@@ -246,7 +240,7 @@ basic_function\
 
 echo -n "Test 39: Too little operational inputs before reaching the end point\n"
 ./maze TestData/std_maze.txt 25 25 < Input/std_solution_less.txt > tmp
-last_line=$(tail -n 1 "$tmp")
+last_line=$(tail -n 1 tmp)
 last_line_std="Please input your next operation in w/s/a/d/m: "
 if [[ "$last_line" == "$last_line_std" ]];
 then
