@@ -91,44 +91,43 @@ echo -n "\n\e[33mMaze file validity detection\e[30m\n"
 
 basic_function\
     "\nTest 12: Test missing point of S or E (1)\n"\
-    "./maze TestData/lack_SE.txt 10 10"\
+    "./maze TestData/lack_SE_1.txt 10 10"\
     "ERROR: The map is not valid"
 
 basic_function\
-    "Test 13: Test repeated point of S or E (2)\n"\
+    "\nTest 13: Test missing point of S or E (2)\n"\
+    "./maze TestData/lack_SE_2.txt 10 10"\
+    "ERROR: The map is not valid"
+
+basic_function\
+    "Test 14: Test repeated point of S or E\n"\
     "./maze TestData/re_SE.txt 10 10"\
     "ERROR: The map is not valid"
 
 basic_function\
-    "Test 14: The invalid symbol in the maze\n"\
+    "Test 15: The invalid symbol in the maze\n"\
     "./maze TestData/invalid_symbol.txt 10 10"\
     "ERROR: The map is not valid"
 
 basic_function\
-    "Test 15: The length and width information do not match (less in row)\n"\
+    "Test 16: The length and width information do not match (less in row)\n"\
     "./maze TestData/lessrow.txt 10 10"\
     "ERROR: The map is not valid"
 
 basic_function\
-    "Test 16: The length and width information do not match (less in col)\n"\
+    "Test 17: The length and width information do not match (less in col)\n"\
     "./maze TestData/lesscol.txt 10 10"\
     "ERROR: The map is not valid"
 
 basic_function\
-    "Test 17: The length and width information do not match (more in col)\n"\
+    "Test 18: The length and width information do not match (more in col)\n"\
     "./maze TestData/morecol.txt 10 10"\
     "ERROR: The map is not valid"
 
 basic_function\
-    "Test 18: The length and width information do not match (more in row)\n"\
+    "Test 19: The length and width information do not match (more in row)\n"\
     "./maze TestData/morerow.txt 10 10"\
     "ERROR: The map is not valid"
-
-basic_function\
-    "Test 19: The length and width information do not match (more in col)\n"\
-    "./maze TestData/morecol.txt 10 10"\
-    "ERROR: The map is not valid"
-
 
 basic_function\
     "Test 20: The length and width information do not match (much more)\n"\
@@ -139,7 +138,7 @@ echo -n "\n\e[33mMaze boundary condition detection\e[0m\n"
 
 basic_function\
     "\nTest 21: Unreachable end point\n"\
-    "./maze TestData/Unre_e.txt 20 20"\
+    "./maze TestData/unre_e.txt 20 20"\
     "WARNING: This game cannot be won"
 
 basic_function\
