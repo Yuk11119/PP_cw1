@@ -8,9 +8,23 @@ struct node{
     int row, col;
 }s, e;
 char **map;
+/**
+ * @brief
+ * @param
+ * @param
+ * @return
+ */
 
+/**
+ * @brief This is a function that check the validation of command line argument
+ *        including the number of arguments, the format of the file and whether it exists and the type of data
+ * @param num the command line argument-argc, type int
+ * @param commandArgument the point of command line argument-argv
+ * @return If the arguments are invalid, return false after printing the error information
+ */
 bool checkArgumentValidation(int num, char *commandArgument[])
 {
+    /*
     // Check the number of command line argument
     // If the length of argv[] is not 4, they are not valid and return false
     if(num != 4) {
@@ -39,25 +53,46 @@ bool checkArgumentValidation(int num, char *commandArgument[])
         printf("ERROR: The file is not exist\n");
         return false;
     }
-    else fclose(file);
+    // Check whether the format of file is .txt
+    // if not, printf("ERROR: The data type is invalid")
     
-    return true;
+    fclose(file);
+    
+    return true;*/
 }
 
+/**
+ * @brief This function checks the validation of the content of maze, including
+ *        the number of S and E points, the invalid symbol and whether the data information match to the maze
+ * @param row the height of maze
+ * @param col the width of maze
+ * @param fileName the point of maze file
+ * @return If the maze is invalid, return false after printing the error information
+ */
 bool checkValidationMap(int row, int col, char *fileName)
 {
+    /*
     bool flag = true;
-    char line[]
     FILE *file = fopen(fileName, "r");
+    // Check that there is and only one point S and one point E
     // Check whether the length and width correspond to the contents of the file
-    // Check the Point S and point D exist simultaneously
-    // Check whether the contents are legal
+    // Check whether each symbol is valid
+    // if anyone not, printf("ERROR: The map is not valid")
     // If all the tests, then run the function of readFile
     fclose(file);
-    return true;
+    return true;*/
 }
 
+/**
+ * @brief The contents of the file are read according to the filename and stored in the map two-dimensional character array
+ *        meanwhile, update the information of variable s and e and the map display
+ * @param row the height of maze
+ * @param col the width of maze
+ * @param fileName the point of maze file
+ * @return no return as the array map is a global variable
+ */
 char** readFile(int rows, int cols, char *fileName) {
+    /*
     map = (char**)malloc(rows * sizeof(char*));
     for (int i = 0; i < rows; i++) {
         map[i] = (char*)malloc(cols * sizeof(char));
@@ -84,32 +119,38 @@ char** readFile(int rows, int cols, char *fileName) {
     }
     fclose(file);
     return map;
+    */
 }
 
+/**
+ * @brief This is a simple function that achieve comparison between two structnode-type variable
+ * @param a one variable
+ * @param b the other variable
+ * @return if these two variables are same, return true
+ */
 bool nodecmp(const struct node a, const struct node b)
 {
     if(a.col != b.col || a.row != b.row) return false;
     else return true;
 }
 
+/**
+ * @brief Check whether the point in the maze is valid, which means it is a space
+ * @param x the node-type variable
+ * @return true or false
+ */
 bool checkLocation(struct node x)
 {
     // Check whether the current direction of movement is legal
     // Whether the curPoint is a border or a wall
 }
 
-void outputMap(int row, int col)
-{
-    // Output the maze to meet the requirement of input-'m'
-    printf("This is the maze:\n");
-    for(int i = 0; i < row; i++) {
-        for(int j = 0; j < col; j++) {
-            printf("%c", map[i][j]);
-        }
-        printf("\n");
-    }
-}
-
+/**
+ * @brief update the information of current point in the maze, using 'X' to represent it
+ * @param curPoint the current location of point
+ * @param nextPoint the latter location of point
+ * @return no return
+ */
 void updateMap(struct node curPoint, struct node nextPoint)
 {
     // Update the information of current point in the maze
@@ -119,6 +160,7 @@ void updateMap(struct node curPoint, struct node nextPoint)
 
 int main(int argc, char *argv[])
 {
+    /*
     struct node curPoint, nextPoint;
     char op;
 
@@ -177,4 +219,5 @@ int main(int argc, char *argv[])
     }
     free(map);
     return 0;
+    */
 }
