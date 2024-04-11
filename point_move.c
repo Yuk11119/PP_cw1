@@ -1,5 +1,4 @@
 #include "maze.h"
-#include<ctype.h>
 #include<stdbool.h>
 #include<stdio.h>
 
@@ -34,28 +33,30 @@ bool checkLocation(struct node x)
 void updateMap(struct node curPoint, struct node nextPoint)
 {
     // Update the information of current point in the maze
-    //map[curPoint.row][curPoint.col] = ' ';
-    //map[nextPoint.row][nextPoint.col] = 'X';
+    /*
+    map[curPoint.row][curPoint.col] = ' ';
+    map[nextPoint.row][nextPoint.col] = 'X';
+    */
 }
 
 /**
- * @brief after convertint op to lowercase letters, check the validation of op and update the information in the map
+ * @brief  update the information in the map
  * @param curPoint current point in maze
- * @param op the operation
+ * @param cmd the operation
  * @return the point in maze after moving
  */
-struct node move(struct node curPoint, char op)
+struct node move(struct node curPoint, char cmd)
 {   
+    /*
     struct node nextPoint;
-    // case insensitive
-    op = tolower(op);
-    // First determine whether the operator op is valid
-    // if not, printf("This operation is not valid, Please input: w/s/a/d/m");
+    */
+   
     // According to the operator to determine the next action
     // if op = 'm', invoke outputMap() else update nextPoint and check the validation
     // if the nextPoint is a space, then invoke updateMap() and printf("move successfully")
     // else printf("oops! This step may have hit a snag. Please input: w/s/a/d/m")
-    if(op == 'm' || op == 'w' || op == 'a' || op == 's' || op == 'd')
+    /*
+    if(cmd == 'm' || cmd == 'w' || cmd == 'a' || cmd == 's' || cmd == 'd')
     {
         if(checkLocation(nextPoint)){
             updateMap(curPoint, nextPoint);
@@ -70,4 +71,5 @@ struct node move(struct node curPoint, char op)
     }
 
     return nextPoint;
+    */
 }

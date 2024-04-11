@@ -37,7 +37,7 @@ void cheat_code()
 {
     // The secret key is "830507265eed04b17ae82cbb335d9a863abdb28d252b945d08e50f3532ba8c70"
     // Record the precursor of each node, reverse order output is the shortest path
-    printf("hey, you are a genius\n");
+    printf("hey, you are a genius\nThere is a instruction of shortest path");
     int pre[MAX_NUM];
     // Depending on the precursor, the operation insruction can be obtained and write to file
     FILE *file = fopen("congratulation.txt", "w");
