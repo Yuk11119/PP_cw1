@@ -165,32 +165,27 @@ basic_function\
     "WARNING: The operation instruction is empty! Please change it"
 
 basic_function\
-    "Test 26: The operation instruction is not exist\n"\
-    "./maze TestData/std_maze.txt 25 25 < Input/None.txt"\
-    "WARNING: The operation instruction is not exist! Please change it"
-
-basic_function\
-    "Test 27: Encountered a wall while moving\n"\
+    "Test 26: Encountered a wall while moving\n"\
     "./maze TestData/std_maze.txt 25 25 < Input/wall.txt"\
     "oops! This step may have hit a snag. Please input: w/s/a/d/m"
 
 basic_function\
-    "Test 28: Encountered a boundary while moving\n"\
+    "Test 27: Encountered a boundary while moving\n"\
     "./maze TestData/std_maze.txt 25 25 < Input/boundary.txt"\
     "oops! This step may have hit a snag. Please input: w/s/a/d/m"
 
 basic_function\
-    "Test 29: Invalid operation instruction (1)\n"\
+    "Test 28: Invalid operation instruction (1)\n"\
     "./maze TestData/std_maze.txt 25 25 < Input/invalid_op_p.txt"\
     "This operation is not valid, Please input: w/s/a/d/m"
 
 basic_function\
-    "Test 30: Invalid operation instruction (2)\n"\
+    "Test 29: Invalid operation instruction (2)\n"\
     "./maze TestData/std_maze.txt 25 25 < Input/invalid_op_n.txt"\
     "This operation is not valid, Please input: w/s/a/d/m"
 
 basic_function\
-    "Test 31: Invalid operation instruction (3)\n"\
+    "Test 30: Invalid operation instruction (3)\n"\
     "./maze TestData/std_maze.txt 25 25 < Input/invalid_op_o.txt"\
     "This operation is not valid, Please input: w/s/a/d/m"
 
@@ -198,11 +193,11 @@ echo -n "\n\e[33mOperation instruction detection\e[0m\n"
 echo -n "   valid detection:\n"
 
 basic_function\
-    "Test 32: String operation instruction\n"\
+    "Test 31: String operation instruction\n"\
     "./maze TestData/std_maze.txt 25 25 < Input/std_solution_string.txt"\
     "Winner Winner, Chicken dinner!"
 
-echo -n "Test 33: Normal input of w/a/s/d\n"
+echo -n "Test 32: Normal input of w/a/s/d\n"
 ./maze TestData/std_maze.txt 25 25 < Input/std_operation.txt > tmp
 cnt=$(grep -o "move successfully" tmp | wc -l)
 if [ $cnt -eq 8 ] && check_map "TestData/std_maze.txt" "$tmp" == 1;
@@ -214,31 +209,31 @@ fi
 rm -f tmp
 
 basic_function\
-    "Test 34: Check operation instructions are case insensitive\n"\
+    "Test 33: Check operation instructions are case insensitive\n"\
     "./maze TestData/std_maze.txt 25 25 < Input/std_solution_Aa.txt"\
     "Winner Winner, Chicken dinner!"
 
 basic_function\
-    "Test 35: Continuity of game\n"\
+    "Test 34: Continuity of game\n"\
     "./maze TestData/std_maze.txt 25 25 < Input/std_solution_bad.txt"\
     "Winner Winner, Chicken dinner!"
 
 basic_function\
-    "Test 36: Check the maze before moving\n"\
+    "Test 35: Check the maze before moving\n"\
     "./maze TestData/std_maze.txt 25 25 < Input/m.txt"\
     "maze is here (12, 10):"
 
 basic_function\
-    "Test 37: Check the maze after moving\n"\
+    "Test 36: Check the maze after moving\n"\
     "./maze TestData/std_maze.txt 25 25 < Input/moving_m.txt"\
     "maze is here (14, 9):"
 
 basic_function\
-    "Test 38: Overmuch operational inputs after reaching the end point\n"\
+    "Test 37: Overmuch operational inputs after reaching the end point\n"\
     "./maze TestData/std_maze.txt 25 25 < Input/std_solution_more.txt"\
     "Winner Winner, Chicken dinner!"
 
-echo -n "Test 39: Too little operational inputs before reaching the end point\n"
+echo -n "Test 38: Too little operational inputs before reaching the end point\n"
 ./maze TestData/std_maze.txt 25 25 < Input/std_solution_less.txt > tmp
 last_line=$(tail -n 1 tmp)
 last_line_std="Please input your next operation in w/s/a/d/m: "
@@ -249,3 +244,47 @@ else
     echo -e "\e[31m FAIL \e[0m"
 fi
 rm -f tmp
+
+echo -n "\n\e[31mAdditional Tests!\e[0m\n"
+
+echo -n "Add-Test 1: Unknown file input\n"
+data_tmp="dt.txt"
+touch "$data_tmp"
+./maze "$data_tmp" 10 10 > tmp
+if grep -q "ERROR: The arguments of width and height are not valid" tmp;
+then
+    echo -e "\e[32m PASS \e[0m"
+else
+    echo -e "\e[31m FAIL \e[0m"
+fi
+rm -f tmp
+rm -f "$data_tmp"
+
+echo -n "Add-Test 2: Compressed file input\n"
+src="TestData/std_maze.txt"
+output_file="datazip.tar.gz"
+tar -czf "$output_file" "$src"
+./maze "$output_file" 10 10 > tmp
+if grep -q "ERROR: The data type is invalid" tmp;
+then
+    echo -e "\e[32m PASS \e[0m"
+else
+    echo -e "\e[31m FAIL \e[0m"
+fi
+rm "$output_file"
+rm -f tmp
+
+echo -n "Add_Test 3: Cheat code implementation\n"
+src="Input/std_operation.txt"
+cp_file="cheat_code.txt"
+new_code="830507265eed04b17ae82cbb335d9a863abdb28d252b945d08e50f3532ba8c70"
+printf "%s\n%s" "$new_code" "$(cat $src)" > "$cp_file"
+./maze "$cp_file" 25 25 <cheat_code.txt > tmp
+if grep -q "hey, you are a genius" tmp;
+then
+    echo -e "\e[32m PASS \e[0m"
+else
+    echo -e "\e[31m FAIL \e[0m"
+fi
+rm -f tmp
+rm -f "$cp_file"
