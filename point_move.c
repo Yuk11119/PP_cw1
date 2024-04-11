@@ -1,17 +1,17 @@
 #include "maze.h"
 #include<ctype.h>
 #include<stdbool.h>
+#include<stdio.h>
 
 /**
  * @brief print the whole maze in the condition of the input is 'm'
- * @param row the height of maze
- * @param col the width of maze
+ * @param curPoint current point in maze
  * @return no return
  */
-void outputMap()
+void outputMap(struct node curPoint)
 {
     // Output the maze to meet the requirement of input-'m'
-    // printf("This is the maze:\n") and printf maze
+    // printf("Maze is here (%d, %d):\n", curPoint.row, curPoint.col) and printf maze
 }
 
 /**
@@ -52,7 +52,7 @@ struct node move(struct node curPoint, char op)
     // First determine whether the operator op is valid
     // if not, printf("This operation is not valid, Please input: w/s/a/d/m");
     // According to the operator to determine the next action
-    // if op = 'm', invoke outputMap else update nextPoint and check the validation
+    // if op = 'm', invoke outputMap() else update nextPoint and check the validation
     // if the nextPoint is a space, then invoke updateMap() and printf("move successfully")
     // else printf("oops! This step may have hit a snag. Please input: w/s/a/d/m")
     if(op == 'm' || op == 'w' || op == 'a' || op == 's' || op == 'd')

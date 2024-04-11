@@ -95,7 +95,7 @@ basic_function\
     "ERROR: The map is not valid"
 
 basic_function\
-    "\nTest 13: Test missing point of S or E (2)\n"\
+    "Test 13: Test missing point of S or E (2)\n"\
     "./maze TestData/lack_SE_2.txt 10 10"\
     "ERROR: The map is not valid"
 
@@ -154,7 +154,7 @@ basic_function\
 basic_function\
     "Test 24: Reach the end point\n"\
     "./maze TestData/std_maze.txt 25 25 < Input/std_solution.txt"\
-    "Winner Winner, Chicken dinner! -Yuk1 wish you happy every day"
+    "Winner Winner, Chicken dinner!"
 
 echo -n "\n\e[33mOperation instruction detection\e[0m\n"
 echo -n "   invalid detection:\n"
@@ -200,12 +200,12 @@ echo -n "   valid detection:\n"
 basic_function\
     "Test 32: String operation instruction\n"\
     "./maze TestData/std_maze.txt 25 25 < Input/std_solution_string.txt"\
-    "Winner Winner, Chicken dinner! -Yuk1 wish you happy every day"
+    "Winner Winner, Chicken dinner!"
 
 echo -n "Test 33: Normal input of w/a/s/d\n"
 ./maze TestData/std_maze.txt 25 25 < Input/std_operation.txt > tmp
 cnt=$(grep -o "move successfully" tmp | wc -l)
-if [[ $cnt == 8 ]] && check_map "TestData/std_maze.txt" "$tmp" == 1;
+if [ $cnt -eq 8 ] && check_map "TestData/std_maze.txt" "$tmp" == 1;
 then
     echo -e "\e[32m PASS \e[0m"
 else
@@ -216,12 +216,12 @@ rm -f tmp
 basic_function\
     "Test 34: Check operation instructions are case insensitive\n"\
     "./maze TestData/std_maze.txt 25 25 < Input/std_solution_Aa.txt"\
-    "Winner Winner, Chicken dinner! -Yuk1 wish you happy every day"
+    "Winner Winner, Chicken dinner!"
 
 basic_function\
     "Test 35: Continuity of game\n"\
     "./maze TestData/std_maze.txt 25 25 < Input/std_solution_bad.txt"\
-    "Winner Winner, Chicken dinner! -Yuk1 wish you happy every day"
+    "Winner Winner, Chicken dinner!"
 
 basic_function\
     "Test 36: Check the maze before moving\n"\
@@ -236,13 +236,13 @@ basic_function\
 basic_function\
     "Test 38: Overmuch operational inputs after reaching the end point\n"\
     "./maze TestData/std_maze.txt 25 25 < Input/std_solution_more.txt"\
-    "Winner Winner, Chicken dinner! -Yuk1 wish you happy every day"
+    "Winner Winner, Chicken dinner!"
 
 echo -n "Test 39: Too little operational inputs before reaching the end point\n"
 ./maze TestData/std_maze.txt 25 25 < Input/std_solution_less.txt > tmp
 last_line=$(tail -n 1 tmp)
 last_line_std="Please input your next operation in w/s/a/d/m: "
-if [[ "$last_line" == "$last_line_std" ]];
+if [ "$last_line" = "$last_line_std" ];
 then
     echo -e "\e[32m PASS \e[0m"
 else
